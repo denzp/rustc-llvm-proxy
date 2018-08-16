@@ -20,4 +20,4 @@ quote = "0.6"
 
 [build-dependencies.syn]
 version = "0.14"
-features = ["full", "extra-traits"] # TODO: remove extra-traits
+features = ["full"]
