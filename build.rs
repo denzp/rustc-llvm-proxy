@@ -1,3 +1,5 @@
+#![deny(warnings)]
+
 extern crate cargo_metadata;
 extern crate quote;
 extern crate syn;
@@ -75,7 +77,7 @@ mod llvm {
                     file,
                     "create_proxy!({}; {}; {});",
                     decl.name, decl.ret_ty, decl.args
-                );
+                )?;
             }
 
             Ok(())

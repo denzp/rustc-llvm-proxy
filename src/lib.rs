@@ -37,6 +37,7 @@ lazy_static! {
     };
 }
 
+/// Commonly used LLVM CAPI symbols with dynamic resolving
 pub mod proxy {
     use super::SHARED_LIB;
 
@@ -51,12 +52,18 @@ pub mod proxy {
             #[no_mangle]
             pub unsafe extern "C" fn $name($($arg: $arg_ty),*) -> $ret_ty {
                 let entrypoint = {
-                    *SHARED_LIB
+                    SHARED_LIB
                         .get::<unsafe extern "C" fn($($arg: $arg_ty),*) -> $ret_ty>(stringify!($name).as_bytes())
-                        .unwrap()
                 };
 
-                entrypoint($($arg),*)
+                match entrypoint {
+                    Ok(entrypoint) => entrypoint($($arg),*),
+
+                    Err(_) => {
+                        eprintln!("Unable to find symbol '{}' in the LLVM shared lib", stringify!($name));
+                        panic!();
+                    }
+                }
             }
         };
     }

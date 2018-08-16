@@ -20,8 +20,8 @@ pub fn find_lib_path() -> Result<PathBuf, Error> {
             return Ok(path.join("librustc_codegen_llvm-llvm.dylib"));
         }
 
-        if path.join("librustc_codegen_llvm-llvm.dll").exists() {
-            return Ok(path.join("librustc_codegen_llvm-llvm.dll"));
+        if path.join("rustc_codegen_llvm-llvm.dll").exists() {
+            return Ok(path.join("rustc_codegen_llvm-llvm.dll"));
         }
     }
 
@@ -47,7 +47,8 @@ fn collect_possible_paths() -> Result<Vec<PathBuf>, Error> {
             rustup_home
                 .join("toolchains")
                 .join(&rustup_toolchain)
-                .join("lib/rustlib")
+                .join("lib")
+                .join("rustlib")
                 .join(rustup_arch)
                 .join("codegen-backends"),
         );
@@ -58,15 +59,17 @@ fn collect_possible_paths() -> Result<Vec<PathBuf>, Error> {
             let mut possible_path = PathBuf::from(item);
             possible_path.pop();
 
-            let possible_toolchain = possible_path.file_name().unwrap();
-            let possible_arch = extract_arch(possible_toolchain.to_str().unwrap());
+            if let Some(possible_toolchain) = possible_path.file_name() {
+                let possible_arch = extract_arch(possible_toolchain.to_str().unwrap());
 
-            paths.push(
-                possible_path
-                    .join("lib/rustlib")
-                    .join(possible_arch)
-                    .join("codegen-backends"),
-            );
+                paths.push(
+                    possible_path
+                        .join("lib")
+                        .join("rustlib")
+                        .join(possible_arch)
+                        .join("codegen-backends"),
+                );
+            }
         }
     }
 
@@ -75,15 +78,17 @@ fn collect_possible_paths() -> Result<Vec<PathBuf>, Error> {
         cargo_path.pop();
         cargo_path.pop();
 
-        let toolchain = cargo_path.file_name().unwrap();
-        let arch = extract_arch(toolchain.to_str().unwrap());
+        if let Some(toolchain) = cargo_path.file_name() {
+            let arch = extract_arch(toolchain.to_str().unwrap());
 
-        paths.push(
-            cargo_path
-                .join("lib/rustlib")
-                .join(arch)
-                .join("codegen-backends"),
-        );
+            paths.push(
+                cargo_path
+                    .join("lib")
+                    .join("rustlib")
+                    .join(arch)
+                    .join("codegen-backends"),
+            );
+        }
     }
 
     if let Ok(output) = Command::new("rustup").args(&["which", "rustc"]).output() {
@@ -91,15 +96,17 @@ fn collect_possible_paths() -> Result<Vec<PathBuf>, Error> {
         rustc_path.pop();
         rustc_path.pop();
 
-        let toolchain = rustc_path.file_name().unwrap();
-        let arch = extract_arch(toolchain.to_str().unwrap());
+        if let Some(toolchain) = rustc_path.file_name() {
+            let arch = extract_arch(toolchain.to_str().unwrap());
 
-        paths.push(
-            rustc_path
-                .join("lib/rustlib")
-                .join(arch)
-                .join("codegen-backends"),
-        );
+            paths.push(
+                rustc_path
+                    .join("lib")
+                    .join("rustlib")
+                    .join(arch)
+                    .join("codegen-backends"),
+            );
+        }
     }
 
     Ok(paths)
