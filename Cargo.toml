@@ -1,7 +1,18 @@
 [package]
 name = "rustc-llvm-proxy"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Denys Zariaiev <denys.zariaiev@gmail.com>"]
+license = "MIT"
+
+readme = "README.md"
+repository = "https://github.com/denzp/rustc-llvm-proxy"
+categories = ["development-tools::build-utils", "external-ffi-bindings"]
+keywords = ["llvm"]
+
+[badges]
+appveyor = { repository = "denzp/rustc-llvm-proxy", branch = "master", service = "github" }
+travis-ci = { repository = "denzp/rustc-llvm-proxy", branch = "master" }
+maintenance = { status = "passively-maintained" }
 
 [dependencies]
 libloading = "0.5"
