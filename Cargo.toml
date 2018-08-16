@@ -1,0 +1,23 @@
+[package]
+name = "rustc-llvm-proxy"
+version = "0.1.0"
+authors = ["Denys Zariaiev <denys.zariaiev@gmail.com>"]
+
+[dependencies]
+libloading = "0.5"
+lazy_static = "1.0"
+failure = "0.1"
+libc = "0.2"
+
+[dependencies.llvm-sys]
+git = "https://github.com/denzp/llvm-sys.rs.git"
+features = ["no-llvm-linking"]
+
+[build-dependencies]
+cargo_metadata = "0.6"
+failure = "0.1"
+quote = "0.6"
+
+[build-dependencies.syn]
+version = "0.14"
+features = ["full", "extra-traits"] # TODO: remove extra-traits
