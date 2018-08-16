@@ -16,6 +16,10 @@ pub fn find_lib_path() -> Result<PathBuf, Error> {
             return Ok(path.join("librustc_codegen_llvm-llvm.so"));
         }
 
+        if path.join("librustc_codegen_llvm-llvm.dylib").exists() {
+            return Ok(path.join("librustc_codegen_llvm-llvm.dylib"));
+        }
+
         if path.join("librustc_codegen_llvm-llvm.dll").exists() {
             return Ok(path.join("librustc_codegen_llvm-llvm.dll"));
         }
