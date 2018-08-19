@@ -1,8 +1,9 @@
 # Rustc LLVM Proxy
 
 [![Build Status](https://travis-ci.org/denzp/rustc-llvm-proxy.svg?branch=master)](https://travis-ci.org/denzp/rustc-llvm-proxy)
-[![Build status](https://ci.appveyor.com/api/projects/status/4oxi872d3nir8ndk?svg=true)](https://ci.appveyor.com/project/denzp/rustc-llvm-proxy)
+[![Build status](https://ci.appveyor.com/api/projects/status/4oxi872d3nir8ndk/branch/master?svg=true)](https://ci.appveyor.com/project/denzp/rustc-llvm-proxy)
 [![Current Version](https://img.shields.io/crates/v/rustc-llvm-proxy.svg)](https://crates.io/crates/rustc-llvm-proxy)
+[![Docs](https://docs.rs/rustc-llvm-proxy/badge.svg)](https://docs.rs/rustc-llvm-proxy)
 
 Dynamically proxy LLVM calls into Rust own shared library! 🎉
 
@@ -15,11 +16,11 @@ Normally there is no much need for the crate, except a couple of exotic cases:
 
 ## Usage
 First, you need to make sure no other crate links your binary against system LLVM library.
-In case you are using `llvm-sys`, this can be achieved with custom repo and a special feature:
+In case you are using `llvm-sys`, this can be achieved with a special feature:
 
 ``` toml
 [dependencies.llvm-sys]
-git = "https://github.com/denzp/llvm-sys.rs.git"
+version = "60"
 features = ["no-llvm-linking"]
 ```
 

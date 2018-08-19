@@ -21,7 +21,7 @@ failure = "0.1"
 libc = "0.2"
 
 [dependencies.llvm-sys]
-git = "https://github.com/denzp/llvm-sys.rs.git"
+version = "60"
 features = ["no-llvm-linking"]
 
 [build-dependencies]

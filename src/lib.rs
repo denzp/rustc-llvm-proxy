@@ -12,11 +12,11 @@
 //!
 //! ## Usage
 //! First, you need to make sure no other crate links your binary against system LLVM library.
-//! In case you are using `llvm-sys`, this can be achieved with custom repo and a special feature:
+//! In case you are using `llvm-sys`, this can be achieved with a special feature:
 //!
 //! ``` toml
 //! [dependencies.llvm-sys]
-//! git = "https://github.com/denzp/llvm-sys.rs.git"
+//! version = "60"
 //! features = ["no-llvm-linking"]
 //! ```
 //!
