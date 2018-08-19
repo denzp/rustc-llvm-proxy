@@ -7,14 +7,18 @@ extern crate syn;
 #[macro_use]
 extern crate failure;
 
+use std::env;
+
 fn main() {
+    let out_dir = env::var("OUT_DIR").unwrap();
+
     println!("cargo:rerun-if-changed=build.rs");
-    println!("cargo:rerun-if-changed=src/llvm_gen.rs");
+    println!("cargo:rerun-if-changed={}/llvm_gen.rs", out_dir);
 
     llvm::Generator::default()
         .parse_llvm_sys_crate()
         .expect("Unable to parse 'llvm-sys' crate")
-        .write_declarations("src/llvm_gen.rs")
+        .write_declarations(&format!("{}/llvm_gen.rs", out_dir))
         .expect("Unable to write generated LLVM declarations");
 }
 

@@ -98,5 +98,5 @@ pub mod proxy {
         };
     }
 
-    include!("llvm_gen.rs");
+    include!(concat!(env!("OUT_DIR"), "/llvm_gen.rs"));
 }
