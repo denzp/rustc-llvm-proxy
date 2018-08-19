@@ -5,6 +5,7 @@ authors = ["Denys Zariaiev <denys.zariaiev@gmail.com>"]
 license = "MIT"
 
 readme = "README.md"
+description = "Dynamically proxy LLVM calls into Rust own shared library"
 repository = "https://github.com/denzp/rustc-llvm-proxy"
 categories = ["development-tools::build-utils", "external-ffi-bindings"]
 keywords = ["llvm"]
