@@ -52,6 +52,7 @@ mod llvm {
         "transforms/pass_manager_builder.rs",
         "transforms/scalar.rs",
         "transforms/vectorize.rs",
+        "debuginfo.rs",
     ];
 
     #[derive(Default)]
