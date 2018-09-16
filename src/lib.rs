@@ -71,7 +71,9 @@ lazy_static! {
 pub mod proxy {
     use super::SHARED_LIB;
 
+    use llvm_sys::analysis::*;
     use llvm_sys::debuginfo::*;
+    use llvm_sys::execution_engine::*;
     use llvm_sys::prelude::*;
     use llvm_sys::target::*;
     use llvm_sys::target_machine::*;

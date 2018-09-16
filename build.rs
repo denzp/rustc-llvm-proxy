@@ -53,6 +53,8 @@ mod llvm {
         "transforms/scalar.rs",
         "transforms/vectorize.rs",
         "debuginfo.rs",
+        "analysis.rs",
+        "execution_engine.rs",
     ];
 
     #[derive(Default)]
