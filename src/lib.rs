@@ -45,6 +45,8 @@ use lib::Library;
 mod path;
 use path::find_lib_path;
 
+pub mod init;
+
 lazy_static! {
     static ref SHARED_LIB: Library = {
         let lib_path = match find_lib_path() {
