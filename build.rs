@@ -57,6 +57,19 @@ mod llvm {
         "execution_engine.rs",
     ];
 
+    const INIT_MACROS: &[&str] = &[
+        "LLVM_InitializeAllTargetInfos",
+        "LLVM_InitializeAllTargets",
+        "LLVM_InitializeAllTargetMCs",
+        "LLVM_InitializeAllAsmPrinters",
+        "LLVM_InitializeAllAsmParsers",
+        "LLVM_InitializeAllDisassemblers",
+        "LLVM_InitializeNativeTarget",
+        "LLVM_InitializeNativeAsmParser",
+        "LLVM_InitializeNativeAsmPrinter",
+        "LLVM_InitializeNativeDisassembler",
+    ];
+
     #[derive(Default)]
     pub struct Generator {
         declarations: Vec<Declaration>,
@@ -80,6 +93,11 @@ mod llvm {
             let mut file = File::create(path)?;
 
             for decl in self.declarations {
+                if INIT_MACROS.contains(&decl.name.as_str()) {
+                    // Skip target initialization wrappers
+                    // (see llvm-sys/wrappers/target.c)
+                    continue;
+                }
                 writeln!(
                     file,
                     "create_proxy!({}; {}; {});",
