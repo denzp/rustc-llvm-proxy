@@ -1,4 +1,5 @@
 use super::SHARED_LIB;
+use llvm_sys::prelude::LLVMBool;
 
 use std::io::{BufRead, BufReader, Result};
 use std::process::Command;
@@ -24,8 +25,13 @@ fn get_native_arch() -> Result<String> {
 
 fn arch2backend(arch: &str) -> String {
     match arch {
-        "x86_64" => "X86".into(),
-        _ => panic!("Unknown backend: {}", arch), // FIXME
+        "aarch64" => "AArch64".into(),
+        "arm" => "ARM".into(),
+        "mips" | "mips64" => "Mips".into(),
+        "powerpc" | "powerpc64" => "PowerPC".into(),
+        "sparc" | "sparc64" => "Sparc".into(),
+        "x86" | "x86_64" => "X86".into(),
+        _ => panic!("Unknown backend: {}", arch),
     }
 }
 
@@ -34,12 +40,60 @@ fn get_native_backend() -> String {
     arch2backend(&arch)
 }
 
-#[no_mangle]
-pub unsafe extern "C" fn LLVM_InitializeAllTargets() {
+unsafe fn init_all(postfix: &str) {
     for backend in POSSIBLE_BACKENDS {
-        let name = format!("LLVMInitialize{}Target", backend);
+        let name = format!("LLVMInitialize{}{}", backend, postfix);
         if let Ok(entrypoint) = SHARED_LIB.get::<unsafe extern "C" fn()>(name.as_bytes()) {
             entrypoint();
         }
     }
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn LLVM_InitializeAllTargetInfos() {
+    init_all("TargetInfo");
+}
+#[no_mangle]
+pub unsafe extern "C" fn LLVM_InitializeAllTargets() {
+    init_all("Target");
+}
+#[no_mangle]
+pub unsafe extern "C" fn LLVM_InitializeAllTargetMCs() {
+    init_all("TargetMC");
+}
+#[no_mangle]
+pub unsafe extern "C" fn LLVM_InitializeAllAsmParsers() {
+    init_all("AsmParser");
+}
+#[no_mangle]
+pub unsafe extern "C" fn LLVM_InitializeAllAsmPrinters() {
+    init_all("AsmPrinter");
+}
+
+unsafe fn init_native(postfix: &str) -> LLVMBool {
+    let backend = get_native_backend();
+    let name = format!("LLVMInitialize{}{}", backend, postfix);
+    if let Ok(entrypoint) = SHARED_LIB.get::<unsafe extern "C" fn()>(name.as_bytes()) {
+        entrypoint();
+        0
+    } else {
+        1
+    }
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn LLVM_InitializeNativeTarget() -> LLVMBool {
+    init_native("Target")
+}
+#[no_mangle]
+pub unsafe extern "C" fn LLVM_InitializeNativeAsmParser() -> LLVMBool {
+    init_native("AsmParser")
+}
+#[no_mangle]
+pub unsafe extern "C" fn LLVM_InitializeNativeAsmPrinter() -> LLVMBool {
+    init_native("AsmPrinter")
+}
+#[no_mangle]
+pub unsafe extern "C" fn LLVM_InitializeNativeDisassembler() -> LLVMBool {
+    init_native("Disassembler")
 }
