@@ -26,7 +26,4 @@ llvm-sys = { version = "70", features = ["no-llvm-linking"] }
 cargo_metadata = "0.6"
 failure = "0.1"
 quote = "0.6"
-
-[build-dependencies.syn]
-version = "0.14"
-features = ["full"]
+syn = { version = "0.15", features = ["full"] }

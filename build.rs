@@ -133,14 +133,17 @@ mod llvm {
             Ok(llvm_lib_rs_path.parent().unwrap().into())
         }
 
-        fn extract_file_declarations(&self, path: &Path) -> Result<Vec<Declaration>, Error> {
+        fn extract_file_declarations(&self, path: &Path)
+                                     -> Result<Vec<Declaration>, Error> {
             let mut file = File::open(path)
-                .map_err(|_| format_err!("Unable to open file: {}", path.to_str().unwrap()))?;
+                .map_err(|_| format_err!("Unable to open file: {}",
+                                         path.to_str().unwrap()))?;
 
             let mut content = String::new();
             file.read_to_string(&mut content)?;
 
-            let ast = parse_file(&content)?;
+            let ast = parse_file(&content)
+                .map_err(|e| failure::err_msg(e.to_string()))?;
 
             Ok(ast.items.iter().fold(vec![], |mut list, item| match item {
                 Item::ForeignMod(ref item) if item.abi.is_c() => {
