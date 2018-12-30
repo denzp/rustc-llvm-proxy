@@ -38,6 +38,16 @@ pub fn find_lib_path() -> Result<PathBuf, Error> {
 fn collect_possible_paths() -> Result<Vec<PathBuf>, Error> {
     let mut paths = vec![];
 
+    // Special case: find the location for Rust built from sources.
+    if let Ok(env_path) = env::var("PATH") {
+        for item in env_path.split(":") {
+            let mut rustc_path = PathBuf::from(item);
+
+            rustc_path.pop();
+            paths.push(rustc_path.join("codegen-backends"));
+        }
+    }
+
     if let Ok(rustup_home) = env::var("RUSTUP_HOME") {
         let rustup_home = PathBuf::from(rustup_home);
         let rustup_toolchain = env::var("RUSTUP_TOOLCHAIN")?;

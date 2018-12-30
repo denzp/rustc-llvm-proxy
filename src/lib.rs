@@ -16,7 +16,7 @@
 //!
 //! ``` toml
 //! [dependencies.llvm-sys]
-//! version = "60"
+//! version = "70"
 //! features = ["no-llvm-linking"]
 //! ```
 //!
@@ -33,6 +33,7 @@
 
 #[macro_use]
 extern crate lazy_static;
+
 #[macro_use]
 extern crate failure;
 
