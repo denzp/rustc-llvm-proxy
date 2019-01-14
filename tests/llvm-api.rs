@@ -7,14 +7,11 @@ use std::ffi::{CStr, CString};
 #[test]
 fn module_creation() {
     unsafe {
-        let module = LLVMModuleCreateWithName(CString::new("test module").unwrap().as_ptr());
+        let module_name = CString::new("test module").unwrap();
+        let module = LLVMModuleCreateWithName(module_name.as_ptr());
 
-        LLVMSetDataLayout(
-            module,
-            CString::new("e-i64:64-v16:16-v32:32-n16:32:64")
-                .unwrap()
-                .as_ptr(),
-        );
+        let data_layout = CString::new("e-i64:64-v16:16-v32:32-n16:32:64").unwrap();
+        LLVMSetDataLayout(module, data_layout.as_ptr());
 
         let module_contents_raw = LLVMPrintModuleToString(module);
         let module_contents = CStr::from_ptr(module_contents_raw);

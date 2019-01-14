@@ -12,6 +12,15 @@ use std::env;
 fn main() {
     let out_dir = env::var("OUT_DIR").unwrap();
 
+    // Dummy declarations for RLS.
+    if std::env::var("CARGO").unwrap_or_default().ends_with("rls") {
+        llvm::Generator::default()
+            .write_declarations(&format!("{}/llvm_gen.rs", out_dir))
+            .expect("Unable to write generated LLVM declarations");
+
+        return;
+    }
+
     println!("cargo:rerun-if-changed=build.rs");
     println!("cargo:rerun-if-changed={}/llvm_gen.rs", out_dir);
 
