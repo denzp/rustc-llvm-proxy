@@ -123,5 +123,15 @@ fn collect_possible_paths() -> Result<Vec<PathBuf>, Error> {
 }
 
 fn extract_arch(toolchain: &str) -> String {
-    toolchain.split('-').skip(1).collect::<Vec<_>>().join("-")
+    toolchain
+        .split('-')
+        // Skip `nightly` rust version prefix.
+        .skip(1)
+        // Also skip rust version specification if exists.
+        .skip_while(|item| match item.chars().next() {
+            None | Some('0'...'9') => true,
+            _ => false,
+        })
+        .collect::<Vec<_>>()
+        .join("-")
 }

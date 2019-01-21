@@ -22,7 +22,6 @@ fn main() {
     }
 
     println!("cargo:rerun-if-changed=build.rs");
-    println!("cargo:rerun-if-changed={}/llvm_gen.rs", out_dir);
 
     llvm::Generator::default()
         .parse_llvm_sys_crate()
