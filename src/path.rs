@@ -1,5 +1,5 @@
 use std::env;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::process::Command;
 
 use failure::Error;
@@ -89,7 +89,7 @@ fn collect_possible_paths() -> Result<Vec<PathBuf>, Error> {
         cargo_path.pop();
 
         if let Some(toolchain) = cargo_path.file_name() {
-            let arch = extract_arch(toolchain.to_str().unwrap());
+            let arch = env::var("HOST").unwrap_or_else(|_| extract_arch(toolchain.to_str().unwrap()));
 
             paths.push(
                 cargo_path
@@ -98,6 +98,21 @@ fn collect_possible_paths() -> Result<Vec<PathBuf>, Error> {
                     .join(arch)
                     .join("codegen-backends"),
             );
+        }
+    }
+
+    if let Some(rustc) = find_rustc() {
+        if let Ok(output) = Command::new(&rustc).args(&["--print", "sysroot"]).output() {
+            let mut sysroot = PathBuf::from(String::from_utf8_lossy(&output.stdout).trim());
+            if let Some(arch) = find_arch(&rustc, &sysroot) {
+                paths.push(
+                    sysroot
+                        .join("lib")
+                        .join("rustlib")
+                        .join(arch)
+                        .join("codegen-backends"),
+                );
+            }
         }
     }
 
@@ -122,6 +137,8 @@ fn collect_possible_paths() -> Result<Vec<PathBuf>, Error> {
     Ok(paths)
 }
 
+// Fails if using nightly build from a specific date
+// e.g. nightly-2018-11-30-x86_64-unknown-linux-gnu
 fn extract_arch(toolchain: &str) -> String {
     toolchain
         .split('-')
@@ -134,4 +151,31 @@ fn extract_arch(toolchain: &str) -> String {
         })
         .collect::<Vec<_>>()
         .join("-")
+}
+
+fn find_rustc() -> Option<PathBuf> {
+    if let Some(path) = env::var_os("RUSTC") {
+        Some(path.into())
+    } else if let Ok(output) = Command::new("rustup").args(&["which", "rustc"]).output() {
+        Some(String::from_utf8_lossy(&output.stdout).trim().into())
+    } else {
+        None
+    }
+}
+
+fn find_arch(rustc: &Path, sysroot: &Path) -> Option<String> {
+    if let Ok(path) = env::var("HOST") {
+        Some(path)
+    } else if let Ok(output) = Command::new(&rustc).args(&["-vV"]).output() {
+        for line in String::from_utf8_lossy(&output.stdout).lines() {
+            if line.starts_with("host") {
+                return Some(line.trim_start_matches("host:").trim().to_string());
+            }
+        }
+        None
+    } else if let Some(toolchain) = sysroot.file_name() {
+        Some(extract_arch(toolchain.to_str().unwrap()))
+    } else {
+        None
+    }
 }
