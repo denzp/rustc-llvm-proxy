@@ -7,7 +7,7 @@ use failure::Error;
 pub fn find_lib_path() -> Result<PathBuf, Error> {
     let paths = collect_possible_paths()?;
 
-    if paths.len() == 0 {
+    if paths.is_empty() {
         bail!("Unable to find possible LLVM shared lib locations.");
     }
 
@@ -40,7 +40,7 @@ fn collect_possible_paths() -> Result<Vec<PathBuf>, Error> {
 
     // Special case: find the location for Rust built from sources.
     if let Ok(env_path) = env::var("PATH") {
-        for item in env_path.split(":") {
+        for item in env_path.split(':') {
             let mut rustc_path = PathBuf::from(item);
 
             rustc_path.pop();
@@ -65,7 +65,7 @@ fn collect_possible_paths() -> Result<Vec<PathBuf>, Error> {
     }
 
     if let Ok(lib_paths) = env::var("LD_LIBRARY_PATH") {
-        for item in lib_paths.split(":") {
+        for item in lib_paths.split(':') {
             let mut possible_path = PathBuf::from(item);
             possible_path.pop();
 
@@ -140,7 +140,17 @@ fn collect_possible_paths() -> Result<Vec<PathBuf>, Error> {
 // Fails if using nightly build from a specific date
 // e.g. nightly-2018-11-30-x86_64-unknown-linux-gnu
 fn extract_arch(toolchain: &str) -> String {
-    toolchain.split('-').skip(1).collect::<Vec<_>>().join("-")
+    toolchain
+        .split('-')
+        // Skip `nightly` rust version prefix.
+        .skip(1)
+        // Also skip rust version specification if exists.
+        .skip_while(|item| match item.chars().next() {
+            None | Some('0'...'9') => true,
+            _ => false,
+        })
+        .collect::<Vec<_>>()
+        .join("-")
 }
 
 fn find_rustc() -> Option<PathBuf> {

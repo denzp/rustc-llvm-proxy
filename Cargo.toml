@@ -1,6 +1,6 @@
 [package]
 name = "rustc-llvm-proxy"
-version = "0.1.6"
+version = "0.1.8"
 authors = ["Denys Zariaiev <denys.zariaiev@gmail.com>"]
 license = "MIT"
 
@@ -20,7 +20,7 @@ libloading = "0.5"
 lazy_static = "1.0"
 failure = "0.1"
 libc = "0.2"
-llvm-sys = { version = "70", features = ["no-llvm-linking"] }
+llvm-sys = { version = "70", features = ["no-llvm-linking", "disable-alltargets-init"] }
 
 [build-dependencies]
 cargo_metadata = "0.6"

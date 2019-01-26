@@ -21,7 +21,7 @@ In case you are using `llvm-sys`, this can be achieved with a special feature:
 ``` toml
 [dependencies.llvm-sys]
 version = "60"
-features = ["no-llvm-linking"]
+features = ["no-llvm-linking", "disable-alltargets-init"]
 ```
 
 Then all you need to do is to include the crate into your project:
