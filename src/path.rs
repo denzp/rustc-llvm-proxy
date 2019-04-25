@@ -37,6 +37,12 @@ fn collect_possible_directories() -> Vec<PathBuf> {
         }
     }
 
+    if let Ok(lib_paths) = env::var("DYLD_FALLBACK_LIBRARY_PATH") {
+        for item in lib_paths.split(':') {
+            paths.push(PathBuf::from(item));
+        }
+    }
+
     if let Ok(bin_paths) = env::var("PATH") {
         for item in bin_paths.split(':') {
             let mut possible_path = PathBuf::from(item);
