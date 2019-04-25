@@ -30,21 +30,22 @@ pub fn find_lib_path() -> Result<PathBuf, Error> {
 
 fn collect_possible_directories() -> Vec<PathBuf> {
     let mut paths = vec![];
+    let separator = if cfg!(windows) { ';' } else { ':' };
 
     if let Ok(lib_paths) = env::var("LD_LIBRARY_PATH") {
-        for item in lib_paths.split(':') {
+        for item in lib_paths.split(separator) {
             paths.push(PathBuf::from(item));
         }
     }
 
     if let Ok(lib_paths) = env::var("DYLD_FALLBACK_LIBRARY_PATH") {
-        for item in lib_paths.split(':') {
+        for item in lib_paths.split(separator) {
             paths.push(PathBuf::from(item));
         }
     }
 
     if let Ok(bin_paths) = env::var("PATH") {
-        for item in bin_paths.split(':') {
+        for item in bin_paths.split(separator) {
             let mut possible_path = PathBuf::from(item);
 
             possible_path.pop();
