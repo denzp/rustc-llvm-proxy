@@ -44,7 +44,7 @@ extern crate llvm_sys;
 use lib::Library;
 
 mod path;
-use path::find_lib_path;
+pub use path::find_lib_path;
 
 pub mod init;
 
