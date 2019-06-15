@@ -146,7 +146,7 @@ fn extract_arch(toolchain: &str) -> String {
         .skip(1)
         // Also skip rust version specification if exists.
         .skip_while(|item| match item.chars().next() {
-            None | Some('0'...'9') => true,
+            None | Some('0'..='9') => true,
             _ => false,
         })
         .collect::<Vec<_>>()
