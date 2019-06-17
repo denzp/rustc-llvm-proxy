@@ -42,7 +42,7 @@ mod llvm {
     use std::io::{Read, Write};
     use std::path::{Path, PathBuf};
 
-    use cargo_metadata::metadata_deps;
+    use cargo_metadata::MetadataCommand;
     use failure::Error;
     use quote::ToTokens;
     use syn::{parse_file, Abi, ForeignItem, Item, ItemForeignMod, ReturnType};
@@ -126,7 +126,8 @@ mod llvm {
         }
 
         fn get_llvm_sys_crate_path(&self) -> Result<PathBuf, Error> {
-            let metadata = metadata_deps(None, true)
+            let metadata = MetadataCommand::new()
+                .exec()
                 .map_err(|_| format_err!("Unable to get crate metadata"))?;
 
             let llvm_dependency = metadata
@@ -144,23 +145,21 @@ mod llvm {
                     .find(|item| item.name == "llvm-sys")
                     .ok_or(format_err!(
                         "Unable to find lib target for 'llvm-sys' crate"
-                    ))?.src_path,
+                    ))?
+                    .src_path,
             );
 
             Ok(llvm_lib_rs_path.parent().unwrap().into())
         }
 
-        fn extract_file_declarations(&self, path: &Path)
-                                     -> Result<Vec<Declaration>, Error> {
+        fn extract_file_declarations(&self, path: &Path) -> Result<Vec<Declaration>, Error> {
             let mut file = File::open(path)
-                .map_err(|_| format_err!("Unable to open file: {}",
-                                         path.to_str().unwrap()))?;
+                .map_err(|_| format_err!("Unable to open file: {}", path.to_str().unwrap()))?;
 
             let mut content = String::new();
             file.read_to_string(&mut content)?;
 
-            let ast = parse_file(&content)
-                .map_err(|e| failure::err_msg(e.to_string()))?;
+            let ast = parse_file(&content).map_err(|e| failure::err_msg(e.to_string()))?;
 
             Ok(ast.items.iter().fold(vec![], |mut list, item| match item {
                 Item::ForeignMod(ref item) if item.abi.is_c() => {
