@@ -103,7 +103,7 @@ fn collect_possible_paths() -> Result<Vec<PathBuf>, Error> {
 
     if let Some(rustc) = find_rustc() {
         if let Ok(output) = Command::new(&rustc).args(&["--print", "sysroot"]).output() {
-            let mut sysroot = PathBuf::from(String::from_utf8_lossy(&output.stdout).trim());
+            let sysroot = PathBuf::from(String::from_utf8_lossy(&output.stdout).trim());
             if let Some(arch) = find_arch(&rustc, &sysroot) {
                 paths.push(
                     sysroot
@@ -146,7 +146,7 @@ fn extract_arch(toolchain: &str) -> String {
         .skip(1)
         // Also skip rust version specification if exists.
         .skip_while(|item| match item.chars().next() {
-            None | Some('0'...'9') => true,
+            None | Some('0'..='9') => true,
             _ => false,
         })
         .collect::<Vec<_>>()
