@@ -118,7 +118,9 @@ mod llvm {
                 writeln!(
                     file,
                     "create_proxy!({}; {}; {});",
-                    decl.name, decl.ret_ty, decl.args
+                    decl.name,
+                    decl.ret_ty,
+                    decl.args.trim_end_matches(",")
                 )?;
             }
 

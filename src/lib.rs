@@ -76,10 +76,10 @@ pub mod proxy {
 
     use llvm_sys::analysis::*;
     use llvm_sys::debuginfo::*;
-    use llvm_sys::execution_engine::*;
     use llvm_sys::disassembler::*;
     use llvm_sys::error::*;
     use llvm_sys::error_handling::*;
+    use llvm_sys::execution_engine::*;
     use llvm_sys::link_time_optimizer::*;
     use llvm_sys::lto::*;
     use llvm_sys::object::*;

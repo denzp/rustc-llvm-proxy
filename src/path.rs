@@ -89,7 +89,8 @@ fn collect_possible_paths() -> Result<Vec<PathBuf>, Error> {
         cargo_path.pop();
 
         if let Some(toolchain) = cargo_path.file_name() {
-            let arch = env::var("HOST").unwrap_or_else(|_| extract_arch(toolchain.to_str().unwrap()));
+            let arch =
+                env::var("HOST").unwrap_or_else(|_| extract_arch(toolchain.to_str().unwrap()));
 
             paths.push(
                 cargo_path
