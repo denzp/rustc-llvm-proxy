@@ -1,8 +1,9 @@
 [package]
 name = "rustc-llvm-proxy"
-version = "0.1.11"
+version = "0.2.0"
 authors = ["Denys Zariaiev <denys.zariaiev@gmail.com>"]
 license = "MIT"
+edition = "2018"
 
 readme = "README.md"
 description = "Dynamically proxy LLVM calls into Rust own shared library"

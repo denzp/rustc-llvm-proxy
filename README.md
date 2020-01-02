@@ -28,7 +28,7 @@ Then all you need to do is to include the crate into your project:
 
 ``` toml
 [dependencies]
-rustc-llvm-proxy = "0.1"
+rustc-llvm-proxy = "0.2"
 ```
 
 ``` rust
