@@ -61,7 +61,7 @@ fn find_library_in_directory(directory: &Path) -> Option<PathBuf> {
     match read_dir(directory) {
         Ok(files) => files
             .filter_map(Result::ok)
-            .find(|file| file.file_name().to_string_lossy().starts_with("libLLVM"))
+            .find(|file| file.file_name().to_string_lossy().starts_with("libLLVM."))
             .map(|file| file.path()),
 
         Err(_) => None,
