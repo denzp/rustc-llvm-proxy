@@ -1,5 +1,5 @@
 #![deny(warnings)]
-#![allow(non_snake_case, unused_imports, unused_macros)]
+#![allow(non_snake_case, unused_imports, unused_macros, deprecated)]
 
 //! Dynamically proxy LLVM calls into Rust own shared library! 🎉
 //!
